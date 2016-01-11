@@ -12,8 +12,6 @@ from django.core.exceptions import ImproperlyConfigured
 
 from llt.utils import random_str, smart_str
 from llt.url import sign_url
-from reconciliations.models import BillLog
-from core.models import ChannelAccount
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -346,7 +344,6 @@ class DownloadBill(WeChatPay):
         super(DownloadBill, self).__init__(wechat_config)
         self.url = 'https://api.mch.weixin.qq.com/pay/downloadbill'
         self.unique_id = 'wechat_%s_%s' % (wechat_config.app_id, wechat_config.mch_id)
-        self.channel_account = ChannelAccount.objects.get(unique_id=self.unique_id)
 
     def post_xml(self):
         xml = self.dict2xml(self.params)
@@ -370,9 +367,7 @@ class DownloadBill(WeChatPay):
         return yesterday
 
     def is_record_writen(self):
-        bill_log = BillLog.objects.filter(
-            date=self.bill_date, channel_account=self.channel_account)
-        return bill_log
+        pass
 
     def date_validation(self, input_date):
         today = datetime.date.today()
@@ -422,12 +417,7 @@ class DownloadBill(WeChatPay):
         return self.post_xml()
 
     def create_bill_log(self, bill_status, file_path, remark):
-        BillLog.objects.create(date=self.bill_date,
-                               bill_status=bill_status,
-                               file_path=file_path,
-                               remark=remark,
-                               channel_account=self.channel_account,
-                               )
+        pass
 
     def get_bill(self, bill_date=None, bill_type='ALL'):
         res = self.get_res(bill_date, bill_type)
