@@ -31,7 +31,7 @@ def get_config(name, config_default=None):
     else:
         raise ImproperlyConfigured("Can't find config for '%s' either in environment"
                                    "variable or in settings.py" % name)
-WC_BILLS_PATH = get_config('BILLS_DIR')
+
 
 
 def dict_to_xml(params, sign):
@@ -423,7 +423,7 @@ class DownloadBill(WeChatPay):
         res = self.get_res(bill_date, bill_type)
 
         month_dir = '%s' % self.rf_bill_date[:6]
-        bill_file_dir = os.path.join(WC_BILLS_PATH, month_dir)
+        bill_file_dir = os.path.join(get_config('BILLS_DIR'), month_dir)
         if not os.path.exists(bill_file_dir):
             os.makedirs(bill_file_dir)
 
