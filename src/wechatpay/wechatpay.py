@@ -97,7 +97,7 @@ class WechatConfig(object):
 
 class WeChatPay(object):
 
-    def __init__(self, wechat_config):
+    def __init__(self, wechat_config, timeout=30):
         self.app_id = wechat_config.app_id
         self.mch_id = wechat_config.mch_id
         self.api_key = wechat_config.api_key
@@ -111,6 +111,7 @@ class WeChatPay(object):
                               'mch_id': self.mch_id}
         self.params = {}
         self.url = ''
+        self.timeout = timeout
 
     def set_params(self, **kwargs):
         self.params = {}
@@ -122,7 +123,7 @@ class WeChatPay(object):
 
     def post_xml(self):
         xml = self.dict2xml(self.params)
-        response = requests.post(self.url, data=xml)
+        response = requests.post(self.url, data=xml, timeout=self.timeout)
         logger.info('Make post request to %s' % response.url)
         logger.debug('Request XML: %s' % xml)
         logger.debug('Response encoding: %s' % response.encoding)
